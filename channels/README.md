@@ -28,3 +28,17 @@ Original avatars in `avatars/` (800x800 PNG, circle-safe). No Rockstar logos or 
 Handles are suggestions; YouTube may say one is taken, so pick the closest free one and update `accounts_gta.toml`.
 
 Regenerate avatars: `python3 channels/make_avatars.py`
+
+## Current clip routing (from each clip's `accounts:` line)
+
+| Clip | Channels |
+|---|---|
+| 01 xQc rates GTA 6 | Streamer Reacts, News Drop, Daily Clips |
+| 02 Kai finds Lacey & Marlon | Streamer Reacts, Funny Moments, Vice Nights, Easter Eggs |
+| 03 Bike ride | Car Spotter, Map Explorer, Graphics Lab, Vice Nights |
+| 04 Joe smashes monitor (not GTA) | Shorts Daily |
+| 05 Lacy restarts marathon | Streamer Reacts, Daily Clips, Shorts Daily |
+| 06 Adin on streamers hating | Streamer Reacts, News Drop, Theories |
+| 07 Bouncers | Fails, Funny Moments, Crime Wave, Shorts Daily |
+| 08 Lacy honest review | Streamer Reacts, News Drop, Story Recap |
+| 09 Lacy can't steal cars | Car Spotter, Crime Wave, Fails, Funny Moments |
