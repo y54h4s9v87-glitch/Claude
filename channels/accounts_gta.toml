@@ -1,0 +1,222 @@
+# Paste into ~/VideoUploads/accounts.toml once each channel exists.
+# Set the real handle YouTube gave you, then enabled = true.
+
+[[account]]
+id = "gta-daily-clips"
+platform = "youtube"
+handle = "@GTADailyClips"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Daily Clips"
+days = "daily"
+times = ["12:07"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-funny-moments"
+platform = "youtube"
+handle = "@GTAFunnyMoments"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Funny Moments"
+days = "daily"
+times = ["13:14"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-news-drop"
+platform = "youtube"
+handle = "@GTANewsDrop"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA News Drop"
+days = "daily"
+times = ["14:21"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-leaks-rumors"
+platform = "youtube"
+handle = "@GTALeaksAndRumors"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Leaks & Rumors"
+days = "daily"
+times = ["15:28"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-streamer-reacts"
+platform = "youtube"
+handle = "@GTAStreamerReacts"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Streamer Reacts"
+days = "daily"
+times = ["16:35"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-car-spotter"
+platform = "youtube"
+handle = "@GTACarSpotter"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Car Spotter"
+days = "daily"
+times = ["17:42"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-map-explorer"
+platform = "youtube"
+handle = "@GTAMapExplorer"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Map Explorer"
+days = "daily"
+times = ["18:49"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-easter-eggs"
+platform = "youtube"
+handle = "@GTAEasterEggs"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Easter Eggs"
+days = "daily"
+times = ["19:56"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-fails"
+platform = "youtube"
+handle = "@GTAFails"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Fails"
+days = "daily"
+times = ["11:03"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-chases"
+platform = "youtube"
+handle = "@GTAChases"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Chases"
+days = "daily"
+times = ["12:10"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-vice-nights"
+platform = "youtube"
+handle = "@GTAViceNights"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Vice Nights"
+days = "daily"
+times = ["13:17"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-stunts"
+platform = "youtube"
+handle = "@GTAStunts"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Stunts"
+days = "daily"
+times = ["14:24"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-online-hub"
+platform = "youtube"
+handle = "@GTAOnlineHub"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Online Hub"
+days = "daily"
+times = ["15:31"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-story-recap"
+platform = "youtube"
+handle = "@GTAStoryRecap"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Story Recap"
+days = "daily"
+times = ["16:38"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-glitches"
+platform = "youtube"
+handle = "@GTAGlitches"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Glitches"
+days = "daily"
+times = ["17:45"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-theories"
+platform = "youtube"
+handle = "@GTATheories"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Theories"
+days = "daily"
+times = ["18:52"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-shorts-daily"
+platform = "youtube"
+handle = "@GTAShortsDaily"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Shorts Daily"
+days = "daily"
+times = ["19:59"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-graphics-lab"
+platform = "youtube"
+handle = "@GTAGraphicsLab"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Graphics Lab"
+days = "daily"
+times = ["11:06"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-radio-vibes"
+platform = "youtube"
+handle = "@GTARadioVibes"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Radio Vibes"
+days = "daily"
+times = ["12:13"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
+
+[[account]]
+id = "gta-crime-wave"
+platform = "youtube"
+handle = "@GTACrimeWave"
+login_hint = "Same Google login. Avatar -> Switch account -> GTA Crime Wave"
+days = "daily"
+times = ["13:20"]
+hashtags = ["#gta6", "#shorts"]
+caption_template = "{description}\n\n{hashtags}"
+enabled = false
