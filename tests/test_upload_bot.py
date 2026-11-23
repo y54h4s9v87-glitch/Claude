@@ -221,3 +221,67 @@ def test_parse_results_tolerates_formatting():
     res, bad = parse_results("- JOB #3: done: link\n`JOB 4 | skipped |`\nJOB 9 | STATUS | link or reason\nJOB x | ???")
     assert [(r.job_id, r.status) for r in res] == [(3, "scheduled"), (4, "pending")]
     assert bad == ["JOB x | ???"]
+
+
+# -- scatter: jitter + per-account shuffle ---------------------------------
+
+SCATTER = """
+[settings]
+timezone = "America/New_York"
+min_lead_minutes = 60
+""" + "".join(f"""
+[[account]]
+id = "ch{i}"
+platform = "youtube"
+handle = "@ch{i}"
+days = "daily"
+times = ["15:00"]
+jitter_minutes = 25
+shuffle = true
+""" for i in range(6))
+
+
+def test_jitter_stays_in_range_and_never_before_earliest():
+    from upload_bot.schedule import jittered
+
+    c = parse_config({"account": [{"id": "a", "platform": "youtube", "handle": "h", "days": "daily",
+                                   "times": ["15:00"], "jitter_minutes": 20}]})
+    a = c.account("a")
+    base = datetime(2026, 11, 24, 15, 0)
+    outs = {jittered(a, base, f"k{i}", datetime(2026, 11, 23, 10, 0)) for i in range(50)}
+    assert len(outs) > 10                                    # actually scattered
+    assert all(abs((o - base).total_seconds()) <= 20 * 60 for o in outs)
+    assert jittered(a, base, "k1", base) >= base            # clamp at earliest
+    assert jittered(a, base, "same", base) == jittered(a, base, "same", base)  # stable
+
+
+def test_each_channel_gets_its_own_order_and_times(ws):
+    (ws / "accounts.toml").write_text(SCATTER)
+    for i in range(8):
+        drop(ws, f"v{i}.mp4", mtime=1000 + i)
+    assert run(ws, "ingest") == 0
+    conn = cli.Ctx(ws).conn
+    orders, minutes = [], set()
+    for i in range(6):
+        rows = conn.execute(
+            "SELECT v.title, j.slot, j.base_slot FROM jobs j JOIN videos v ON v.id = j.video_id"
+            " WHERE account_id = ? ORDER BY j.base_slot", (f"ch{i}",)).fetchall()
+        assert len(rows) == 8
+        assert len({r["base_slot"][:10] for r in rows}) == 8    # still one per day
+        orders.append(tuple(r["title"] for r in rows))
+        minutes |= {r["slot"][11:] for r in rows}
+    assert len(set(orders)) >= 5          # channels post the batch in different orders
+    assert len(minutes) > 10              # times are not all 15:00
+
+
+def test_old_database_gets_base_slot_column(tmp_path):
+    import sqlite3
+
+    from upload_bot import db as dbm
+
+    path = tmp_path / "old.db"
+    old = sqlite3.connect(path)
+    old.executescript(dbm.SCHEMA.replace("    base_slot   TEXT,                   -- the schedule slot before jitter\n", ""))
+    old.close()
+    conn = dbm.connect(path)
+    assert "base_slot" in {r[1] for r in conn.execute("PRAGMA table_info(jobs)")}

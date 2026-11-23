@@ -3,6 +3,7 @@ configured timezone, so they are easy to test."""
 
 from __future__ import annotations
 
+import random
 from collections import Counter
 from datetime import date, datetime, timedelta
 
@@ -55,3 +56,17 @@ def window_opens(account: Account, slot: datetime) -> datetime | None:
 def is_ready(account: Account, slot: datetime, now: datetime) -> bool:
     opens = window_opens(account, slot)
     return opens is None or opens <= now
+
+
+def jittered(account: Account, base: datetime, key: str, earliest: datetime) -> datetime:
+    """Move `base` by a stable random amount within +/- jitter_minutes, so
+    posts don't all land on the exact same clock time. Never earlier than
+    `earliest`."""
+    n = account.jitter_minutes
+    if not n:
+        return base
+    off = random.Random(key).randint(-n, n)
+    out = base + timedelta(minutes=off)
+    if out < earliest:
+        out = base + timedelta(minutes=abs(off))
+    return out

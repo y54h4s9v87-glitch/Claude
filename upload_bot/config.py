@@ -63,6 +63,8 @@ class Account:
     title_template: str = "{title}"
     horizon_days: int | None = None
     notes: str = ""
+    jitter_minutes: int = 0
+    shuffle: bool = False
     extra: dict = field(default_factory=dict)
 
     @property
@@ -133,6 +135,7 @@ def parse_config(data: dict) -> Config:
         "id", "platform", "handle", "days", "times", "max_per_day", "enabled",
         "chrome_profile", "login_hint", "visibility", "hashtags",
         "caption_template", "title_template", "horizon_days", "notes",
+        "jitter_minutes", "shuffle",
     }
     accounts: list[Account] = []
     seen: set[str] = set()
@@ -166,8 +169,12 @@ def parse_config(data: dict) -> Config:
             title_template=raw.get("title_template", Account.title_template),
             horizon_days=raw.get("horizon_days"),
             notes=raw.get("notes", ""),
+            jitter_minutes=int(raw.get("jitter_minutes", 0)),
+            shuffle=bool(raw.get("shuffle", False)),
             extra={k: v for k, v in raw.items() if k not in known},
         )
+        if not 0 <= acct.jitter_minutes <= 180:
+            raise ConfigError(f"{where}: jitter_minutes must be between 0 and 180")
         if acct.max_per_day < 1:
             raise ConfigError(f"{where}: max_per_day must be at least 1")
         if acct.horizon_days is None:

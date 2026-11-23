@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import random
 import shutil
 import subprocess
 import sys
@@ -18,7 +19,7 @@ from .brief import parse_results, render_brief
 from .config import EXAMPLE_CONFIG, Config, ConfigError, Workspace, default_home, load_config
 from .metadata import MetadataError, read_meta, render_for, sidecar_for
 from .platforms import VIDEO_EXTENSIONS
-from .schedule import earliest_for, is_ready, next_slot, now_in, window_opens
+from .schedule import earliest_for, is_ready, jittered, next_slot, now_in, window_opens
 
 # --------------------------------------------------------------------------
 # helpers
@@ -153,7 +154,7 @@ def cmd_ingest(ctx: Ctx, args) -> int:
         print(f"Inbox is empty ({ws.inbox}).")
         return 0
 
-    created, problems = [], 0
+    created, problems, batch = [], 0, []
     for video in videos:
         try:
             meta = read_meta(video)
@@ -198,21 +199,35 @@ def cmd_ingest(ctx: Ctx, args) -> int:
             "INSERT INTO videos (path, fingerprint, title, added_at) VALUES (?, ?, ?, ?)",
             (str(dest.resolve()), fp, meta.title, dbm.stamp(now)),
         )
-        vid = cur.lastrowid
-        for a in accounts:
-            slot = next_slot(a, dbm.taken_slots(conn, a.id), earliest_for(a, now, cfg.settings.min_lead_minutes, meta.not_before))
+        conn.commit()
+        batch.append((cur.lastrowid, fp, dest, meta, rendered, accounts))
+
+    # Second pass: each account takes this batch in its own order
+    # (shuffled when the account has shuffle = true), then each post's
+    # time is nudged by up to jitter_minutes.
+    for a in cfg.accounts:
+        items = [b for b in batch if any(x.id == a.id for x in b[5])]
+        if not items:
+            continue
+        if a.shuffle:
+            random.Random(f"{a.id}:{dbm.stamp(now)}:{len(items)}").shuffle(items)
+        for vid, fp, dest, meta, rendered, _ in items:
+            earliest = earliest_for(a, now, cfg.settings.min_lead_minutes, meta.not_before)
+            base = next_slot(a, dbm.taken_slots(conn, a.id), earliest)
+            slot = jittered(a, base, f"{a.id}:{fp}", earliest)
             r = rendered[a.id]
             conn.execute(
-                "INSERT INTO jobs (video_id, account_id, platform, slot, title, caption, updated_at)"
-                " VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (vid, a.id, a.platform, dbm.stamp(slot), r.title, r.caption, dbm.stamp(now)),
+                "INSERT INTO jobs (video_id, account_id, platform, slot, base_slot, title, caption, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (vid, a.id, a.platform, dbm.stamp(slot), dbm.stamp(base), r.title, r.caption, dbm.stamp(now)),
             )
-            created.append([dest.name, a.id, pretty(dbm.stamp(slot))])
+            created.append([dest.name, a.id, dbm.stamp(slot)])
         conn.commit()
 
     if created:
         print(f"Queued {len(created)} upload job(s):")
-        print(table(created, ["video", "account", "scheduled for"]))
+        created.sort(key=lambda r: (r[1], r[2]))
+        print(table([[v, a, pretty(t)] for v, a, t in created], ["video", "account", "scheduled for"]))
     return 1 if problems and not created else 0
 
 
@@ -230,8 +245,9 @@ def _reslot_missed(ctx: Ctx) -> list[str]:
         earliest = earliest_for(a, now, cfg.settings.min_lead_minutes, None)
         if dbm.unstamp(j["slot"]) >= earliest:
             continue
-        new = next_slot(a, dbm.taken_slots(conn, a.id, exclude_job=j["id"]), earliest)
-        conn.execute("UPDATE jobs SET slot = ? WHERE id = ?", (dbm.stamp(new), j["id"]))
+        base = next_slot(a, dbm.taken_slots(conn, a.id, exclude_job=j["id"]), earliest)
+        new = jittered(a, base, f"{a.id}:job{j['id']}", earliest)
+        conn.execute("UPDATE jobs SET slot = ?, base_slot = ? WHERE id = ?", (dbm.stamp(new), dbm.stamp(base), j["id"]))
         moved.append(f"job {j['id']} ({a.id}) {pretty(j['slot'])} -> {pretty(dbm.stamp(new))}")
     conn.commit()
     return moved
@@ -398,10 +414,12 @@ def cmd_reschedule(ctx: Ctx, args) -> int:
         if new <= ctx.now():
             print("That time is in the past.")
             return 1
+        base = new
     else:
-        new = next_slot(a, dbm.taken_slots(ctx.conn, a.id, exclude_job=row["id"]),
-                        earliest_for(a, ctx.now(), ctx.cfg.settings.min_lead_minutes, None))
-    ctx.conn.execute("UPDATE jobs SET slot = ? WHERE id = ?", (dbm.stamp(new), row["id"]))
+        earliest = earliest_for(a, ctx.now(), ctx.cfg.settings.min_lead_minutes, None)
+        base = next_slot(a, dbm.taken_slots(ctx.conn, a.id, exclude_job=row["id"]), earliest)
+        new = jittered(a, base, f"{a.id}:job{row['id']}:{dbm.stamp(base)}", earliest)
+    ctx.conn.execute("UPDATE jobs SET slot = ?, base_slot = ? WHERE id = ?", (dbm.stamp(new), dbm.stamp(base), row["id"]))
     ctx.conn.commit()
     print(f"job {row['id']} ({a.id}) -> {pretty(dbm.stamp(new))}")
     return 0

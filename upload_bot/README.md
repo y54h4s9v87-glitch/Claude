@@ -54,6 +54,19 @@ Videos post in the order you dropped them. A video goes to each account's next
 free slot, so if you drop 10 videos and YouTube posts daily at 15:00, they fill
 the next 10 days.
 
+## Scattering times and order
+
+Two optional settings per account in `accounts.toml`:
+
+```toml
+jitter_minutes = 30   # each post lands a different 0-30 min before/after the slot
+shuffle = true        # this account gets each inbox batch in its own random order
+```
+
+With `shuffle = true` on several accounts, the same batch of videos goes out in
+a different order on each one. Jitter is stable per video, so re-running a
+brief doesn't keep moving times around.
+
 ## Title and caption (optional sidecar file)
 
 `my_clip.mp4` + `my_clip.txt`:

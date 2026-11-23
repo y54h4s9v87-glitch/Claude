@@ -16,6 +16,8 @@ min_lead_minutes = 60             # never schedule sooner than this from now
 # chrome_profile / login_hint: tells Claude which Chrome profile or Google /
 #   Meta login this account lives under, so it switches before uploading.
 # caption_template vars: {title} {description} {hashtags}
+# jitter_minutes: move each post a random 0-N minutes around its slot (0-180)
+# shuffle: true = this account takes each inbox batch in its own random order
 # ---------------------------------------------------------------------------
 
 [[account]]
