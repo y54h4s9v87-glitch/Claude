@@ -176,3 +176,11 @@ wholesale_bot/
   seed.py         the deals from the working notes
   config.py       tunable defaults
 ```
+
+---
+
+## Also in this repo: video upload bot
+
+`./uploader` queues videos for every YouTube / TikTok / Instagram / Facebook /
+X account you run and writes briefs for Claude in Chrome to upload and
+schedule them. See [upload_bot/README.md](upload_bot/README.md).

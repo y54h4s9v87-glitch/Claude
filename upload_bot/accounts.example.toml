@@ -1,0 +1,92 @@
+# Every channel/account the bot posts to. `./uploader init` copies this to
+# ~/VideoUploads/accounts.toml -- edit that copy, not this one.
+#
+# Each video you drop in the inbox gets one job per enabled account, placed in
+# that account's next free posting slot.
+
+[settings]
+timezone = "America/New_York"     # every time below is wall-clock in this zone
+min_lead_minutes = 60             # never schedule sooner than this from now
+# default_accounts = ["yt-main", "tt-main"]   # leave out = all enabled accounts
+
+# ---------------------------------------------------------------------------
+# days:  ["mon","wed","fri"] | "daily" | "weekdays" | "weekends"
+# times: one or more "HH:MM" posting slots per day
+# max_per_day: cap on posts per day for this account
+# chrome_profile / login_hint: tells Claude which Chrome profile or Google /
+#   Meta login this account lives under, so it switches before uploading.
+# caption_template vars: {title} {description} {hashtags}
+# ---------------------------------------------------------------------------
+
+[[account]]
+id = "yt-main"
+platform = "youtube"
+handle = "@YourChannel"
+chrome_profile = "Default"
+login_hint = "Google account you@example.com, channel picker -> YourChannel"
+days = "daily"
+times = ["15:00"]
+max_per_day = 1
+visibility = "public"            # public | unlisted | private
+hashtags = ["#shorts"]
+title_template = "{title}"
+caption_template = "{description}\n\n{hashtags}"
+# YouTube-only options
+made_for_kids = false
+playlist = ""                    # exact playlist name, or "" for none
+category = ""                    # e.g. "Entertainment", "" = leave default
+
+[[account]]
+id = "yt-second"
+platform = "youtube"
+handle = "@YourSecondChannel"
+login_hint = "Same Google login, switch channel via avatar -> Switch account"
+days = ["mon", "wed", "fri"]
+times = ["18:00"]
+hashtags = ["#shorts"]
+enabled = false                  # flip to true when ready
+
+[[account]]
+id = "tt-main"
+platform = "tiktok"
+handle = "@yourtiktok"
+login_hint = "TikTok login via email; switch account from profile menu"
+days = "daily"
+times = ["12:00", "19:00"]
+max_per_day = 2
+visibility = "everyone"          # everyone | friends | only_me
+hashtags = ["#fyp"]
+caption_template = "{title} {hashtags}"
+allow_comments = true
+allow_duet = true
+allow_stitch = true
+
+[[account]]
+id = "ig-main"
+platform = "instagram"
+handle = "@yourinsta"
+login_hint = "Meta Business Suite -> top-left asset picker -> yourinsta"
+days = "daily"
+times = ["11:00"]
+hashtags = ["#reels"]
+caption_template = "{title}\n\n{description}\n\n{hashtags}"
+also_share_to_facebook = false
+
+[[account]]
+id = "fb-page"
+platform = "facebook"
+handle = "Your Page Name"
+login_hint = "Meta Business Suite -> asset picker -> Your Page Name"
+days = "weekdays"
+times = ["13:00"]
+caption_template = "{title}\n\n{description}"
+enabled = false
+
+[[account]]
+id = "x-main"
+platform = "x"
+handle = "@yourx"
+days = "daily"
+times = ["17:00"]
+caption_template = "{title} {hashtags}"
+enabled = false
